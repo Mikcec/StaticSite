@@ -1,11 +1,16 @@
-from textnode import TextNode, TextType
 import re
 
-def text_to_textnodes(text):
-    node_list = [TextNode(text, TextType.TEXT)]
-    
-    return (split_nodes_image(split_nodes_link(split_nodes_delimiter(split_nodes_delimiter(split_nodes_delimiter(node_list, "**" , TextType.BOLD), "`" , TextType.CODE), "_" , TextType.ITALIC))))
+from textnode import TextNode, TextType
 
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
 
 
 # def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -106,10 +111,6 @@ def split_nodes_link(old_nodes):
     return new_nodes
 
 
-# def extract_markdown_images(text):
-#     image_tuple = re.findall(r"\[(.*?)\]\((.*?)\)", text)    
-#     return (image_tuple)
-
 def extract_markdown_images(text):
     pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
     matches = re.findall(pattern, text)
@@ -120,3 +121,6 @@ def extract_markdown_links(text):
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     matches = re.findall(pattern, text)
     return matches
+
+
+
